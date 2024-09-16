@@ -18,5 +18,6 @@
 ## 关于提问
 - **实验中遇到的问题请直接通过在github上提issue的方式提出**
   - 如何提问:[GitHub-Issue 正确的提问方式 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/75691927)，请同学们在提问前阅读;
+  - 请参考issue提问示例;
   - 助教会尽量在1天内回复issue，提issue之前请先搜索有无相似问题已被回答，重复的问题和难以回答的问题不会收到回复;
   - 每次issue完成后请保持open状态,每次实验ddl后助教会关闭当次实验的所有issue;
