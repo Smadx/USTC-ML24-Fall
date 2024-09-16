@@ -2,7 +2,7 @@
 
 > <p><strong>机器学习概论</strong>lab1</p>
 >
-> Author:@Rosykunai
+> Author:@Rosykunai(如果你认为实验出的有问题,请在微信群私聊)
 >
 > <p><strong>Date:</strong> 2024年9月</p>
 
