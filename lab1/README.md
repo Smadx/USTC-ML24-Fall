@@ -17,7 +17,8 @@
 __Conda__ (推荐):
 
 ```bash
-conda env create -f environment.yml
+conda create -n ml24 python=3.9
+pip install -r requirements.txt
 conda activate ml24
 ```
 
