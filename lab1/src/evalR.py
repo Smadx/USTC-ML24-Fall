@@ -51,8 +51,9 @@ def main():
     with open(results_path / "config.yaml", "w") as f:
         yaml.dump(dataclasses.asdict(cfg), f)
 
-    mu = eval_LinearRegression(model, testloader)
+    mu, relative_error = eval_LinearRegression(model, testloader)
     print(f"Average prediction: {mu}")
+    print(f"Relative error: {relative_error}")
 
 if __name__ == "__main__":
     main()
