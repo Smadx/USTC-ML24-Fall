@@ -161,7 +161,7 @@ python trainR.py --results_path "..\results\train\" | Out-File -FilePath train.l
 
  
 
-(a)实现``eval_LinearRegression()``函数,在test_loop中,``Dataloader``加载一个``batch``，你还是需要把它分为``feature``和``target``，然后让``feature``通过模型得到预测``y_pred``,这一次,你需要统计验证集/测试集上所有预测的均值$\mu$,当然,我们推荐你计算均方误差和相对误差 $relative\_error = \frac{\mu-\mu_{true}}{\mu_{true}}$来作为判断模型性能的一个参考,最终你需要返回所有预测的均值$\mu$和相对误差。 (3 points)
+(a)实现``eval_LinearRegression()``函数,在test_loop中,``Dataloader``加载一个``batch``，你还是需要把它分为``feature``和``target``，然后让``feature``通过模型得到预测``y_pred``,这一次,你需要统计验证集/测试集上所有预测的均值$\mu$,当然,我们推荐你计算均方误差和相对误差 $relative\_error = \frac{|\mu-\mu_{true}|}{\mu_{true}}$来作为判断模型性能的一个参考,最终你需要返回所有预测的均值$\mu$和相对误差。 (3 points)
 
  
 
