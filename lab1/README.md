@@ -60,13 +60,25 @@ pip install -r requirements.txt
 
     $$grade=5\times (1-10\times\underbrace{relative\_error}_\text{On the testset you divided})+10\times (1-10\times \underbrace{relative\_error}_\text{On TA's testset})$$
 
-    如果$relative\_error>0.1$,你不会在这部分得到任何分数。 
+    
+
+    $$R^2 = 1-\frac{\sum_{i=1}^N(y_i-\hat{y_i})^2}{\sum_{i=1}^N(y_i-\bar{y})^2}$$
+
+    如果$relative\_error>0.1$或$R^2<-1$,你不会在这部分得到任何分数；
+
+    如果$-1<R^2<=0$,这部分分数会$\times 0.8$；
+
+    *如果你的模型性能超越了sklearn,你会在这部分得到满分。
 
   - Classification(15%):
 
     $$grade=5\times (\underbrace{accuracy}_\text{On the testset you divided}-0.5)/0.5+10 \times (\underbrace{accuracy}_\text{On TA's testset}-0.5)/0.5$$
 
-    如果$accuracy<0.5$,你不会在这部分得到任何分数。 
+    如果$accuracy<0.5$,你不会在这部分得到任何分数；
+    
+    如果第一部分的$R^2<0$,这部分分数会$\times 0.8$ ；
+    
+    *如果你的模型性能超越了sklearn,你会在这部分得到满分。
 
 - Report(30%):
 
