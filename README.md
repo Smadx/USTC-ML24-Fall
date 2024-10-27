@@ -14,6 +14,7 @@
 |lab/homework|topic|deadline|
 |:-:|:-:|:-:|
 |1|Linear Model|2024-10-13|
+|2|Neural Network|2024-11-17|
 
 ## 关于提问
 - **实验中遇到的问题请直接通过在github上提issue的方式提出**
