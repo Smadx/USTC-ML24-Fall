@@ -17,6 +17,7 @@ from submission import (
     MSELoss,
 )
 
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -25,74 +26,74 @@ def main():
 
     # Data
     parser.add_argument(
-        "--data_dir", 
-        type=str, 
+        "--data_dir",
+        type=str,
         default="Rosykunai/SGEMM_GPU_performance",
         help="The path to the training data.",
     )
     parser.add_argument(
-        "--batch_size", 
-        type=int, 
+        "--batch_size",
+        type=int,
         default=4096,
         help="The batch size for training.",
     )
     parser.add_argument(
-        "--shuffle", 
-        type=bool, 
+        "--shuffle",
+        type=bool,
         default=True,
         help="Whether to shuffle the data.",
     )
 
     # Model
     parser.add_argument(
-        "--in_features", 
-        type=int, 
+        "--in_features",
+        type=int,
         default=14,
         help="The number of input features.",
     )
     parser.add_argument(
-        "--out_features", 
-        type=int, 
+        "--out_features",
+        type=int,
         default=1,
         help="The number of output features.",
     )
 
     # Optimization
     parser.add_argument(
-        "--lr", 
-        type=float, 
+        "--lr",
+        type=float,
         default=2e-9,
         help="The learning rate used for optimization.",
     )
     parser.add_argument(
-        "--lr_decay", 
-        type=float, 
+        "--lr_decay",
+        type=float,
         default=0.99,
         help="The learning rate decay factor when using SGD.",
     )
     parser.add_argument(
-        "--decay_every", 
-        type=int, 
+        "--decay_every",
+        type=int,
         default=10,
         help="The number of steps after which to decay the learning rate.",
     )
-    
+
     # Training
     parser.add_argument(
-        "--epochs", 
-        type=int, 
+        "--epochs",
+        type=int,
         default=100,
         help="The number of epochs to train.",
     )
     parser.add_argument(
-        "--results_path", 
-        type=str, 
+        "--results_path",
+        type=str,
         default=None,
         help="The path to save the results.",
     )
     parser.add_argument(
-        "--seed", 
-        type=int, 
+        "--seed",
+        type=int,
         default=123,
         help="The seed to use for reproducibility.",
     )
@@ -109,7 +110,7 @@ def main():
         raise ValueError("Use trainC.py for classification")
     else:
         raise ValueError(f"Task {cfg.task} not supported")
-    
+
     # Load the dataset
     dataset = data_preprocessing_regression(cfg.data_dir)
 
@@ -134,6 +135,7 @@ def main():
         config=cfg,
         results_path=results_path,
     ).train()
+
 
 if __name__ == "__main__":
     main()
