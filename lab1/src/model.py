@@ -3,6 +3,7 @@ from typing import Dict, Optional, Any, Callable, Iterator, Tuple
 from collections import OrderedDict
 from utils import Parameter
 
+
 def _predict_unimplemented(self, *input: Any) -> None:
     r"""Define the computation performed at every call.
 
@@ -14,7 +15,8 @@ def _predict_unimplemented(self, *input: Any) -> None:
         instead of this since the former takes care of running the
         registered hooks while the latter silently ignores them.
     """
-    raise NotImplementedError(f"Model [{type(self).__name__}] is missing the required \"predict\" function")
+    raise NotImplementedError(f'Model [{type(self).__name__}] is missing the required "predict" function')
+
 
 class BaseModel:
     r"""Base class for all your models.
@@ -30,39 +32,43 @@ class BaseModel:
         >>>     def __init__(self, *args, **kwargs):
         >>>         super.__init__()
         >>>         self.param = Parameter(...)
-        >>>     
+        >>>
         >>>     def predict(self, input: np.ndarry):
         >>>         # Details
         >>>
         >>> # Use the model to predict
         >>> model = Yourmodel()
         >>> pred = model(inputs)
-        >>> 
+        >>>
         >>> # Save the parameters
         >>> state_dict = model.state_dict()
         >>> save(state_dict, 'model.pkl')
     """
+
     training: bool = False
     _parameters: Dict[str, Optional[Parameter]]
     call_super_init: bool = True
 
     def __init__(self, *args, **kwargs) -> None:
         if self.call_super_init is False and bool(kwargs):
-            raise TypeError("{}.__init__() got an unexpected keyword argument '{}'"
-                            "".format(type(self).__name__, next(iter(kwargs))))
+            raise TypeError(
+                "{}.__init__() got an unexpected keyword argument '{}'"
+                "".format(type(self).__name__, next(iter(kwargs)))
+            )
 
         if self.call_super_init is False and bool(args):
-            raise TypeError(f"{type(self).__name__}.__init__() takes 1 positional argument but {len(args) + 1} were"
-                            " given")
-        
+            raise TypeError(
+                f"{type(self).__name__}.__init__() takes 1 positional argument but {len(args) + 1} were" " given"
+            )
+
         """
         Calls super().__setattr__('a', a) instead of the typical self.a = a
         to avoid Model.__setattr__ overhead. Model's __setattr__ has special
         handling for parameters, subModels, and buffers but simply calls into
         super().__setattr__ for all other attributes.
         """
-        super().__setattr__('training', True)
-        super().__setattr__('_parameters', OrderedDict())
+        super().__setattr__("training", True)
+        super().__setattr__("_parameters", OrderedDict())
 
         if self.call_super_init:
             super().__init__(*args, **kwargs)
@@ -72,8 +78,8 @@ class BaseModel:
     def _call_impl(self, *args, **kwargs):
         predict_call = self.predict
         return predict_call(*args, **kwargs)
-    
-    __call__ : Callable[..., Any] = _call_impl
+
+    __call__: Callable[..., Any] = _call_impl
 
     def __setattr__(self, name: str, value: Any) -> None:
         if isinstance(value, Parameter):
@@ -88,7 +94,7 @@ class BaseModel:
         """
         for name, param in self._parameters.items():
             destination[name] = param
-    
+
     def state_dict(self, destination: Optional[dict] = None):
         r"""Returns the state dict of model
 
@@ -99,7 +105,6 @@ class BaseModel:
             destination = OrderedDict()
         self._save_state_dict(destination)
         return destination
-
 
     def load_from_state_dict(self, state_dict: dict):
         r"""Loads the state of the model from a dictionary.
@@ -125,11 +130,11 @@ class BaseModel:
         """
         for name, param in self._parameters.items():
             yield name, param
-    
+
     def train(self) -> None:
         r"""Sets the Model in training mode."""
         self.training = True
-    
+
     def eval(self) -> None:
         r"""Sets the Model in evaluation mode."""
         self.training = False

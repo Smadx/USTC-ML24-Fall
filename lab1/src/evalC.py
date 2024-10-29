@@ -20,6 +20,7 @@ from submission import (
     eval_LogisticRegression,
 )
 
+
 def main():
     parser = argparse.ArgumentParser()
 
@@ -45,9 +46,9 @@ def main():
 
     train_set, test_set = data_split_classification(dataset)
 
-    test_set = test_set.to_pandas().drop(columns=['__index_level_0__'])
+    test_set = test_set.to_pandas().drop(columns=["__index_level_0__"])
 
-    results_path = Path(cfg.results_path + f"_{cfg.task}") / get_date_str() 
+    results_path = Path(cfg.results_path + f"_{cfg.task}") / get_date_str()
     os.makedirs(results_path, exist_ok=True)
 
     with open(results_path / "config.yaml", "w") as f:
@@ -55,6 +56,7 @@ def main():
 
     accuracy = eval_LogisticRegression(model, test_set.values)
     print(f"Accuracy: {accuracy}")
+
 
 if __name__ == "__main__":
     main()
