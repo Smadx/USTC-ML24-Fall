@@ -28,7 +28,7 @@ jobs:
         continue-on-error: true
         with:
           jupyter: true
-          options: "-line-length 120"
+          options: "--line-length 120"
 
       - name: Determine if a PR should be submitted
         if: github.ref == 'refs/heads/main'
