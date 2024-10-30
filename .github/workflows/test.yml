@@ -8,16 +8,11 @@ on:
     branches:
       - "*"
 
-permissions:
-  contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.TEMP_BRANCH_PAT }}
 
       - name: "Linting: autocorrect"
         continue-on-error: true
@@ -50,7 +45,6 @@ jobs:
         if: steps.file_changes.outputs.should_submit == 'true' && github.ref == 'refs/heads/main'
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.TEMP_BRANCH_PAT }}
           commit-message: "Auto fix formatting from GitHub Actions run ${{ github.run_number }}"
           assignees: "${{ github.actor }}"
           branch: auto-fix-actions-${{ github.run_number }}
