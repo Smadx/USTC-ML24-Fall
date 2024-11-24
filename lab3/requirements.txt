@@ -8,7 +8,7 @@ PyYAML==6.0.1
 tqdm==4.66.4
 safetensors==0.4.5
 scikit-learn==1.5.1
-pytorch==2.5.1
+torch==2.5.1
 torchvision==0.20.1
 torchaudio==2.5.1
 diffusers==0.31.0
