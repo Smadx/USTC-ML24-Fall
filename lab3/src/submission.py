@@ -7,6 +7,7 @@ from typing import Union
 from PIL import Image
 import json
 
+
 # 1
 class GMM:
     """
@@ -32,6 +33,7 @@ class GMM:
         - predict(X): Predict the cluster for each sample.
         - save_pretrained(path): Save the GMM model to a file.
     """
+
     def __init__(self, n_components: int, data_dim: int):
         self.n_components = n_components
         self.data_dim = data_dim
@@ -40,7 +42,7 @@ class GMM:
         self.pi = np.ones(n_components) / n_components
 
     @classmethod
-    def from_pretrained(cls, path: Union[str , Path]):
+    def from_pretrained(cls, path: Union[str, Path]):
         """
         Load the GMM model from a file.
 
@@ -48,16 +50,16 @@ class GMM:
             - path: str, Path to load the model.
         """
         path = Path(path)
-        with open(path / 'config.json', 'r') as f:
+        with open(path / "config.json", "r") as f:
             config = json.load(f)
-        params = load_file(path / 'gmm.safetensors')
+        params = load_file(path / "gmm.safetensors")
         model = cls(**config)
-        model.means = params['means']
-        model.covs = params['covs']
-        model.pi = params['pi']
+        model.means = params["means"]
+        model.covs = params["covs"]
+        model.pi = params["pi"]
         return model
 
-    def fit(self, X: np.ndarray, max_iter: int =100):
+    def fit(self, X: np.ndarray, max_iter: int = 100):
         """
         Fit the GMM model to the data.
 
@@ -79,7 +81,7 @@ class GMM:
             # M-step
             self._m_step(X, gamma)
 
-    def _e_step(self, X: np.ndarray)-> np.ndarray:
+    def _e_step(self, X: np.ndarray) -> np.ndarray:
         """
         E-step: Compute the responsibilities.
 
@@ -97,7 +99,7 @@ class GMM:
         raise Exception("Not implemented yet")
         # END_YOUR_CODE
         return gamma
-    
+
     def _m_step(self, X: np.ndarray, gamma: np.ndarray):
         """
         M-step: Update the parameters.
@@ -108,13 +110,13 @@ class GMM:
         """
         N, D = X.shape
         n_soft = np.sum(gamma, axis=0)  # [K,]
-        
+
         # 1.2 M-step: Update the parameters
         # BEGIN_YOUR_CODE
         raise Exception("Not implemented yet")
         # END_YOUR_CODE
 
-    def _gaussian(self, X: np.ndarray, mean: np.ndarray, inv_cov: np.ndarray, det: float)-> np.ndarray:
+    def _gaussian(self, X: np.ndarray, mean: np.ndarray, inv_cov: np.ndarray, det: float) -> np.ndarray:
         """
         Compute the Gaussian probability density function for a single component.
 
@@ -130,10 +132,10 @@ class GMM:
         N, D = X.shape
         diff = X - mean
         exponent = np.sum(diff @ inv_cov * diff, axis=1)
-        log_prob = -0.5 * exponent - 0.5 * np.log(det) - D / 2 * np.log(2 * np.pi) # Prevent overflow
+        log_prob = -0.5 * exponent - 0.5 * np.log(det) - D / 2 * np.log(2 * np.pi)  # Prevent overflow
         return np.exp(log_prob)
-    
-    def predict(self, X: np.ndarray)-> np.ndarray:
+
+    def predict(self, X: np.ndarray) -> np.ndarray:
         """
         Predict the cluster for each sample.
 
@@ -142,8 +144,8 @@ class GMM:
         """
         gamma = self._e_step(X)
         return np.argmax(gamma, axis=1)
-    
-    def save_pretrained(self, path: Union[str , Path]):
+
+    def save_pretrained(self, path: Union[str, Path]):
         """
         Save the GMM model to a file.
 
@@ -152,22 +154,15 @@ class GMM:
         """
         path = Path(path)
         path.mkdir(parents=True, exist_ok=True)
-        config = {
-            "n_components": self.n_components,
-            "data_dim": self.data_dim
-        }
-        params = {
-            "means": self.means,
-            "covs": self.covs,
-            "pi": self.pi
-        }
+        config = {"n_components": self.n_components, "data_dim": self.data_dim}
+        params = {"means": self.means, "covs": self.covs, "pi": self.pi}
 
         # Save config
-        with open(path / 'config.json', 'w') as f:
+        with open(path / "config.json", "w") as f:
             json.dump(config, f, indent=4)
 
         # Save params
-        save_file(params, path / 'gmm.safetensors')
+        save_file(params, path / "gmm.safetensors")
 
 
 # 2
@@ -190,13 +185,14 @@ class PCA:
         - transform(X): Project the data into the reduced space.
         - save_pretrained(path): Save the PCA model to a file.
     """
+
     def __init__(self, dim: int):
         self.dim = dim
         self.components = None
         self.mean = None
 
     @classmethod
-    def from_pretrained(cls, path: Union[str , Path]):
+    def from_pretrained(cls, path: Union[str, Path]):
         """
         Load the PCA model from a file.
 
@@ -204,12 +200,12 @@ class PCA:
             - path: str, Path to load the model.
         """
         path = Path(path)
-        with open(path / 'config.json', 'r') as f:
+        with open(path / "config.json", "r") as f:
             config = json.load(f)
-        params = load_file(path / 'pca.safetensors')
+        params = load_file(path / "pca.safetensors")
         model = cls(**config)
-        model.components = params['components']
-        model.mean = params['mean']
+        model.components = params["components"]
+        model.mean = params["mean"]
         return model
 
     def fit(self, X: np.ndarray):
@@ -224,7 +220,7 @@ class PCA:
         raise Exception("Not implemented yet")
         # END_YOUR_CODE
 
-    def transform(self, X: np.ndarray)-> np.ndarray:
+    def transform(self, X: np.ndarray) -> np.ndarray:
         """
         Project the data into the reduced space.
 
@@ -237,8 +233,8 @@ class PCA:
         # Project data
         X = X - self.mean
         return X @ self.components.T
-    
-    def inverse_transform(self, X_pca: np.ndarray)-> np.ndarray:
+
+    def inverse_transform(self, X_pca: np.ndarray) -> np.ndarray:
         """
         Project the data back to the original space.
 
@@ -249,8 +245,8 @@ class PCA:
             - X: np.ndarray, shape (N, D), Original data.
         """
         return X_pca @ self.components + self.mean
-    
-    def save_pretrained(self, path: Union[str , Path]):
+
+    def save_pretrained(self, path: Union[str, Path]):
         """
         Save the PCA model to a file.
 
@@ -259,19 +255,19 @@ class PCA:
         """
         path = Path(path)
         path.mkdir(parents=True, exist_ok=True)
-        config = {'dim': self.dim}
-        params = {'components': self.components, 'mean': self.mean}
+        config = {"dim": self.dim}
+        params = {"components": self.components, "mean": self.mean}
 
         # Save config
-        with open(path / 'config.json', 'w') as f:
+        with open(path / "config.json", "w") as f:
             json.dump(config, f, indent=4)
 
         # Save params
-        save_file(params, path / 'pca.safetensors')
+        save_file(params, path / "pca.safetensors")
 
 
 # 5
-def sample_from_gmm(gmm: GMM, pca: PCA, label: int, path: Union[str , Path]):
+def sample_from_gmm(gmm: GMM, pca: PCA, label: int, path: Union[str, Path]):
     """
     Sample images from a Gaussian Mixture Model.
 
@@ -284,8 +280,8 @@ def sample_from_gmm(gmm: GMM, pca: PCA, label: int, path: Union[str , Path]):
     # BEGIN_YOUR_CODE
     raise Exception("Not implemented yet")
     # END_YOUR_CODE
-    
+
     # Save an example image(you can change this part of the code if you want)
-    sample = Image.fromarray(sample[0], mode='L') # if sample shape is (1, 28, 28)
+    sample = Image.fromarray(sample[0], mode="L")  # if sample shape is (1, 28, 28)
     path = Path(path)
-    sample.save(path / 'gmm_sample.png')
+    sample.save(path / "gmm_sample.png")
