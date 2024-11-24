@@ -1,6 +1,6 @@
 # MNIST
 
-> <p><strong>机器学习概论</strong>lab1</p>
+> <p><strong>机器学习概论</strong>lab3</p>
 > <p><strong>Author:</strong>@Rosykunai</p>
 > <p><strong>Date</strong>2024 年 11 月</p>
 
@@ -15,6 +15,7 @@
 **Conda** (推荐):(Python=3.9)
 
 ```bash
+# conda create -n ml24 python=3.9
 conda activate ml24
 pip install -r requirements.txt
 ```
@@ -64,7 +65,7 @@ conda install pytorch torchvision torchaudio pytorch-cuda=12.4 # CUDA版本
 
   ​ 我们在原始数据空间 (784 维) 中使用`davies_bouldin_score`度量聚类的性能：
 
-  ​ $$ grade=30 \* \frac{DB*{sklearn}}{DB*{yours}} $$
+  ​ $ grade=30 * \frac{ DB_{ sklearn } }{ DB_{ yours } } $
 
   ​ \*如果你的模型性能超越了 sklearn，你会在这部分得到满分。
 

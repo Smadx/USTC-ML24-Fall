@@ -1,6 +1,6 @@
 # MNIST
 
-> <p><strong>机器学习概论</strong>lab1</p>
+> <p><strong>机器学习概论</strong>lab3</p>
 >
 > <p><strong>Author:</strong>@Rosykunai</p>
 >
