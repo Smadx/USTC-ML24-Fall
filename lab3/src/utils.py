@@ -10,6 +10,7 @@ from tqdm import tqdm
 import torch
 from diffusers import DDPMScheduler
 
+
 @dataclass
 class TrainConfig:
     embedding_dim: int
@@ -18,6 +19,7 @@ class TrainConfig:
     max_iter: int
     results_path: str
     seed: int
+
 
 def ae_encode(ae: AE, dataset: np.ndarray) -> np.ndarray:
     """
@@ -38,14 +40,15 @@ def ae_encode(ae: AE, dataset: np.ndarray) -> np.ndarray:
     print("AE encoding ...")
     with torch.no_grad():
         for i in tqdm(range(B)):
-            img = img_tensor[i].unsqueeze(0) # [1, C, H, W]
+            img = img_tensor[i].unsqueeze(0)  # [1, C, H, W]
             img_encoded = ae.encoder(img)
-            encoded_list.append(img_encoded.squeeze(0)) # [dim]
+            encoded_list.append(img_encoded.squeeze(0))  # [dim]
 
-    encoded_imgs = torch.stack(encoded_list) # [B, dim]
+    encoded_imgs = torch.stack(encoded_list)  # [B, dim]
     if device == "cuda":
         return encoded_imgs.detach().cpu().numpy()
     return encoded_imgs.numpy()
+
 
 def sample_from_ddpm(label: int, path: Union[str, Path]):
     """
@@ -69,7 +72,7 @@ def sample_from_ddpm(label: int, path: Union[str, Path]):
         x = noise_schedule.step(pred, t, x).prev_sample
     img = x[0][0].detach().cpu().numpy()
 
-    img = Image.fromarray((img * 255).astype('uint8'))
+    img = Image.fromarray((img * 255).astype("uint8"))
     path = Path(path)
     img.save(path / "ddpm_sample.png")
 
