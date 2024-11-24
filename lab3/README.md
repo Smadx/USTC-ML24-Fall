@@ -65,7 +65,7 @@ conda install pytorch torchvision torchaudio pytorch-cuda=12.4 # CUDA版本
 
   ​ 我们在原始数据空间 (784 维) 中使用`davies_bouldin_score`度量聚类的性能：
 
-  ​ $ grade=30 * \frac{ DB_{ sklearn } }{ DB_{ yours } } $
+  ​ $ grade=30 \* \frac{ DB*{ sklearn } }{ DB*{ yours } } $
 
   ​ \*如果你的模型性能超越了 sklearn，你会在这部分得到满分。
 
