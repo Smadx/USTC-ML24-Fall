@@ -1,11 +1,12 @@
-from datasets import DatasetDict, load_dataset
-from model import AE, ClassUNet
-import numpy as np
-import torch
 import os
 
 # If downloading the dataset is slow, you can use the mirror
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
+
+from datasets import DatasetDict, load_dataset
+from model import AE, ClassUNet
+import numpy as np
+import torch
 
 # Load the dataset
 raw_dataset = load_dataset("ylecun/mnist")
