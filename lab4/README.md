@@ -24,7 +24,7 @@ pip install -r requirements.txt
 
 ## 提交要求
 
-上传一个`学号 + 姓名+LAB3.zip`文件，包含：
+上传一个`学号 + 姓名+LAB4.zip`文件，包含：
 
 - `results`
   - `tabular`
