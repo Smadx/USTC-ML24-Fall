@@ -69,34 +69,41 @@ def discretize(x, bins) -> Tuple[int]:
 # An abstract class representing a Markov Decision Process (MDP).
 class MDP:
     # Return the start state.
-    def startState(self): raise NotImplementedError("Override me")
+    def startState(self):
+        raise NotImplementedError("Override me")
 
     # Property holding the set of possible actions at each state.
     @property
-    def actions(self) -> List[ActionT]: raise NotImplementedError("Override me")
+    def actions(self) -> List[ActionT]:
+        raise NotImplementedError("Override me")
 
     # Property holding the discount factor
     @property
-    def discount(self): raise NotImplementedError("Override me")
+    def discount(self):
+        raise NotImplementedError("Override me")
 
     # property holding the maximum number of steps for running the simulation.
     @property
-    def time_limit(self) -> int: raise NotImplementedError("Override me")
+    def time_limit(self) -> int:
+        raise NotImplementedError("Override me")
 
     # Transitions the MDP
-    def transition(self, action): raise NotImplementedError("Override me")
+    def transition(self, action):
+        raise NotImplementedError("Override me")
 
 
 class RLAlgorithm:
     """
     Abstract class:
-        An RLAlgorithm performs reinforcement learning.  All it needsto know is the 
+        An RLAlgorithm performs reinforcement learning.  All it needsto know is the
         set of available actions to take.  The simulator (see simulate()) will call
         getAction() to get an action, perform the action, and then provide feedback
         (via incorporateFeedback()) to the RL algorithm, so it can adjust its parameters.
     """
+
     # Your algorithm will be asked to produce an action given a state.
-    def getAction(self, state: StateT) -> ActionT: raise NotImplementedError("Override me")
+    def getAction(self, state: StateT) -> ActionT:
+        raise NotImplementedError("Override me")
 
     # We will call this function when simulating an MDP, and you should update
     # parameters.
@@ -119,7 +126,7 @@ class RandomAgent(RLAlgorithm):
 
     def incorporateFeedback(self, state: StateT, action: ActionT, reward: int, nextState: StateT, terminal: bool):
         pass
-    
+
 
 def simulate(mdp: MDP, rl: RLAlgorithm, numTrials=10, train=True, verbose=False, demo=False):
     """
@@ -152,7 +159,7 @@ def simulate(mdp: MDP, rl: RLAlgorithm, numTrials=10, train=True, verbose=False,
             state = nextState
 
             if terminal:
-                break # We have reached a terminal state
+                break  # We have reached a terminal state
 
         if verbose and trial % 100 == 0:
             print(("Trial %d (totalReward = %s, Length = %s)" % (trial, totalReward, trialLength)))
@@ -198,6 +205,7 @@ class WeightsBiasesTracker:
         write: Write metrics to the run.
         finalize: Finish the run.
     """
+
     def __init__(
         self,
         run_id: str,
@@ -257,6 +265,7 @@ class Metrics:
         push: Push the metrics to the trackers.
         finalize: Finalize the trackers.
     """
+
     def __init__(
         self,
         stage: str,
@@ -270,9 +279,7 @@ class Metrics:
         self.run_id, self.run_dir, self.hparams, self.stage = run_id, run_dir, hparams, stage
 
         # Initialize Tracker
-        tracker = WeightsBiasesTracker(
-            run_id, run_dir, hparams, project=wandb_project, entity=wandb_entity
-        )
+        tracker = WeightsBiasesTracker(run_id, run_dir, hparams, project=wandb_project, entity=wandb_entity)
 
         # Add Hyperparameters --> add to `self.trackers`
         tracker.write_hyperparameters()
@@ -324,7 +331,11 @@ class Metrics:
     def push(self) -> str:
         """Push the metrics to the trackers."""
         loss = torch.stack(list(self.state["loss"])).mean().item()
-        reward, step_time, lr = np.mean(list(self.state["reward"])), np.mean(list(self.state["step_time"])), self.state["lr"][-1]
+        reward, step_time, lr = (
+            np.mean(list(self.state["reward"])),
+            np.mean(list(self.state["step_time"])),
+            self.state["lr"][-1],
+        )
         status = self.get_status(loss)
 
         # Fire to Trackers
