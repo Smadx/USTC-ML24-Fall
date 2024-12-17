@@ -29,14 +29,9 @@ if __name__ == "__main__":
         "--agent",
         type=str,
         choices=["naive-mountaincar", "naive-cartpole", "value-iteration", "tabular", "reinforce"],
-        help="naive-mountaincar (\"naive-mountaincar\"), naive-cartpole (\"naive-cartpole\"), model-based value iteration (\"value-iteration\"), tabular Q-learning (\"tabular\"), policy gradient (\"reinforce\")",
+        help='naive-mountaincar ("naive-mountaincar"), naive-cartpole ("naive-cartpole"), model-based value iteration ("value-iteration"), tabular Q-learning ("tabular"), policy gradient ("reinforce")',
     )
-    parser.add_argument(
-        "--results_path",
-        type=str,
-        default="../results",
-        help="Path to save results"
-    )
+    parser.add_argument("--results_path", type=str, default="../results", help="Path to save results")
     args = parser.parse_args()
 
     model_path = Path(args.results_path) / args.agent
@@ -123,4 +118,3 @@ if __name__ == "__main__":
         env.close()
     else:
         raise ValueError("Invalid agent type")
-

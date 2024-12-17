@@ -15,11 +15,7 @@ from mdp import MoutainCarMDP
 from submission import Policy, ModelBasedMonteCarlo, TabularQLearning
 
 
-def evaluate_policy_agent(
-        agent: Policy, 
-        n_eval_episodes: int, 
-        seed: int = 42
-    )-> Tuple[float, float]:
+def evaluate_policy_agent(agent: Policy, n_eval_episodes: int, seed: int = 42) -> Tuple[float, float]:
     """
     Evaluate a policy agent in the CartPole environment.
 
@@ -32,8 +28,8 @@ def evaluate_policy_agent(
         - mean_reward: float, the mean reward of the agent
         - std_reward: float, the standard deviation of the reward of the agent
     """
-    env = gym.make('CartPole-v1')
-    
+    env = gym.make("CartPole-v1")
+
     num_params = sum(p.numel() for p in agent.parameters())
     num_params_k = num_params / 10**3
     print(f"Parameters : {num_params_k:.3f}K Total.")
@@ -47,13 +43,13 @@ def evaluate_policy_agent(
         step = 0
         done = False
         total_rewards_ep = 0
-        
+
         while True:
             state = torch.from_numpy(np.array(state)).float().unsqueeze(0)
             action, _ = agent.getAction(state)
             state, reward, terminated, truncated, info = env.step(action)
             total_rewards_ep += reward
-                
+
             if terminated or truncated:
                 break
 
@@ -68,11 +64,8 @@ def evaluate_policy_agent(
 
 
 def evaluate_value_agent(
-        agent: Union[ModelBasedMonteCarlo, TabularQLearning], 
-        max_steps: int, 
-        n_eval_episodes: int, 
-        seed: int = 42
-    )-> Tuple[float, float, float]:
+    agent: Union[ModelBasedMonteCarlo, TabularQLearning], max_steps: int, n_eval_episodes: int, seed: int = 42
+) -> Tuple[float, float, float]:
     """
     Evaluate a value-based agent in the MountainCar environment.
 
@@ -87,26 +80,19 @@ def evaluate_value_agent(
         - std_reward: float, the standard deviation of the reward of the agent
         - win_rate: float, the rate of successful episodes
     """
-    mdp = MoutainCarMDP(
-            discount=0.999,
-            low=[-1.2, -0.07],
-            high=[0.6, 0.07],
-            num_bins=20,
-            time_limit=1000,
-            seed=seed
-        )
-    
+    mdp = MoutainCarMDP(discount=0.999, low=[-1.2, -0.07], high=[0.6, 0.07], num_bins=20, time_limit=1000, seed=seed)
+
     episode_rewards = []
     succ = 0
     for episode in tqdm(range(n_eval_episodes)):
         state = mdp.startState()
         total_rewards_ep = 0
-        
+
         for step in range(max_steps):
             action = agent.getAction(state)
             state, reward, terminated = mdp.transition(action)
             total_rewards_ep += reward
-                
+
             if terminated:
                 succ += 1
                 break
@@ -122,12 +108,7 @@ def evaluate_value_agent(
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument(
-        "--results_path",
-        type=str,
-        default="../results",
-        help="Path to save results"
-    )
+    parser.add_argument("--results_path", type=str, default="../results", help="Path to save results")
 
     args = parser.parse_args()
 
@@ -151,6 +132,7 @@ def main():
         print(f"PolicyGradient: {mean_reward_reinforce} +/- {std_reward_reinforce}")
 
     print(f"You got a score of {win_rate_mcvi * 15 + win_rate_tabular * 15} out of 30!")
+
 
 if __name__ == "__main__":
     main()

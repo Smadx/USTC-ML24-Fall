@@ -7,13 +7,7 @@ from matplotlib import pyplot as plt
 from typing import Union
 from pathlib import Path
 
-from utils import (
-    TrainConfig,
-    Metrics,
-    simulate, 
-    handle_results_path, 
-    init_config_from_args
-)
+from utils import TrainConfig, Metrics, simulate, handle_results_path, init_config_from_args
 
 from grade import evaluate_policy_agent
 
@@ -24,6 +18,7 @@ def movingAverage(x, window):
     cumSum = np.cumsum(x)
     ma = (cumSum[window:] - cumSum[:-window]) / window
     return ma
+
 
 def plotRewards(trainRewards: list, evalRewards: list, savePath: Union[str, Path] = None, show: bool = True):
     """
@@ -41,11 +36,11 @@ def plotRewards(trainRewards: list, evalRewards: list, savePath: Union[str, Path
     evalMA = movingAverage(evalRewards, window)
     tLen = len(trainRewards)
     eLen = len(evalRewards)
-    plt.scatter(range(tLen), trainRewards, alpha=0.5, c='tab:blue', linewidth=0, s=5)
-    plt.plot(range(int(window/2), tLen-int(window/2)), trainMA, lw=2, c='b')
-    plt.scatter(range(tLen, tLen+eLen), evalRewards, alpha=0.5, c='tab:green', linewidth=0, s=5)
-    plt.plot(range(tLen+int(window/2), tLen+eLen-int(window/2)), evalMA, lw=2, c='darkgreen')
-    plt.legend(['train rewards', 'train moving average', 'eval rewards', 'eval moving average'])
+    plt.scatter(range(tLen), trainRewards, alpha=0.5, c="tab:blue", linewidth=0, s=5)
+    plt.plot(range(int(window / 2), tLen - int(window / 2)), trainMA, lw=2, c="b")
+    plt.scatter(range(tLen, tLen + eLen), evalRewards, alpha=0.5, c="tab:green", linewidth=0, s=5)
+    plt.plot(range(tLen + int(window / 2), tLen + eLen - int(window / 2)), evalMA, lw=2, c="darkgreen")
+    plt.legend(["train rewards", "train moving average", "eval rewards", "eval moving average"])
     plt.xlabel("Episode")
     plt.ylabel("Discounted Reward in Episode")
 
@@ -72,7 +67,7 @@ if __name__ == "__main__":
         "--agent",
         type=str,
         choices=["value-iteration", "tabular", "reinforce"],
-        help="model-based value iteration (\"value-iteration\"), tabular Q-learning (\"tabular\"), policy gradient (\"reinforce\")",
+        help='model-based value iteration ("value-iteration"), tabular Q-learning ("tabular"), policy gradient ("reinforce")',
     )
     parser.add_argument(
         "--results_path",
@@ -82,14 +77,20 @@ if __name__ == "__main__":
     )
     parser.add_argument("--mcvi_exprob", type=float, default=0.5, help="ExplorationProb for mcvi training.")
     parser.add_argument("--mcvi_episodes", type=int, default=1000, help="The number of episodes for mcvi training.")
-    parser.add_argument("--tabular_exprob", type=float, default=0.15, help="ExplorationProb for TabularQLearning training.")
-    parser.add_argument("--tabular_episodes", type=int, default=1000, help="The number of episodes for TabularQLearning Training.")
+    parser.add_argument(
+        "--tabular_exprob", type=float, default=0.15, help="ExplorationProb for TabularQLearning training."
+    )
+    parser.add_argument(
+        "--tabular_episodes", type=int, default=1000, help="The number of episodes for TabularQLearning Training."
+    )
 
     # If you don't want to try Policy Gradient, the above arguments are enough.
     # [Optional] Policy Gradient Training
     parser.add_argument("--is_resume", action="store_true", help="Resume training from a pretrained checkpoint.")
     parser.add_argument("--pretrain_path", type=str, default=None, help="Path to pretrained checkpoint.")
-    parser.add_argument("--batch_size", type=int, default=1, help="Number of trajectories uesd to estimate policy gradient.")
+    parser.add_argument(
+        "--batch_size", type=int, default=1, help="Number of trajectories uesd to estimate policy gradient."
+    )
     parser.add_argument("--num_updates", type=int, default=1000, help="Number of policy updates to perform.")
     parser.add_argument("--max_t", type=int, default=1000, help="Maximum time steps in an episode.")
     parser.add_argument("--gamma", type=float, default=0.9, help="Discount factor for rewards.")
@@ -133,17 +134,16 @@ if __name__ == "__main__":
                 num_bins=20,
                 time_limit=1000,
             )
-            rl = ModelBasedMonteCarlo(
-                mdp.actions, mdp.discount, calcValIterEvery=1e5, explorationProb=cfg.mcvi_exprob
-            )
+            rl = ModelBasedMonteCarlo(mdp.actions, mdp.discount, calcValIterEvery=1e5, explorationProb=cfg.mcvi_exprob)
             trainRewards = simulate(mdp, rl, train=True, numTrials=cfg.mcvi_episodes, verbose=True)
-            print(f"Training complete! Running evaluation, writing weights to {save_path}/mcvi.safetensors and generating reward plot...")
+            print(
+                f"Training complete! Running evaluation, writing weights to {save_path}/mcvi.safetensors and generating reward plot..."
+            )
             evalRewards = simulate(mdp, rl, train=False, numTrials=500)
 
             rl.save_pretrained(save_path)
 
-            plotRewards(trainRewards, evalRewards, save_path / f'mcvi_{i}.png')
-
+            plotRewards(trainRewards, evalRewards, save_path / f"mcvi_{i}.png")
 
     # Trained Discrete Agent
     elif cfg.agent == "tabular":
@@ -163,12 +163,14 @@ if __name__ == "__main__":
             )
             rl = TabularQLearning(mdp.actions, mdp.discount, explorationProb=cfg.tabular_exprob)
             trainRewards = simulate(mdp, rl, train=True, numTrials=cfg.tabular_episodes, verbose=True)
-            print(f"Training complete! Running evaluation, writing weights to {save_path}/tabular.safetensors and generating reward plot...")
+            print(
+                f"Training complete! Running evaluation, writing weights to {save_path}/tabular.safetensors and generating reward plot..."
+            )
             evalRewards = simulate(mdp, rl, train=False, numTrials=500)
 
             rl.save_pretrained(save_path)
 
-            plotRewards(trainRewards, evalRewards, save_path / f'tabular_{i}.png')
+            plotRewards(trainRewards, evalRewards, save_path / f"tabular_{i}.png")
 
     # Training Policy
     elif cfg.agent == "reinforce":
@@ -193,7 +195,7 @@ if __name__ == "__main__":
                 hparams=asdict(cfg),
                 wandb_project=cfg.project,
                 wandb_entity=cfg.entity,
-                window_size=cfg.window_size
+                window_size=cfg.window_size,
             )
 
         policy = reinforce(
@@ -206,7 +208,7 @@ if __name__ == "__main__":
             checkpoint_path=save_path,
             save_every=cfg.save_every,
             window_size=cfg.window_size,
-            metrics=metrics if cfg.track else None
+            metrics=metrics if cfg.track else None,
         )
 
         reward, std = evaluate_policy_agent(policy, 100)

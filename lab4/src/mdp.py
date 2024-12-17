@@ -3,6 +3,7 @@ import numpy as np
 from typing import Any, Optional, List
 from utils import create_bins, discretize, MDP, StateT, ActionT
 
+
 class MoutainCarMDP(MDP):
     """
     The Mountain Car MDP
@@ -25,17 +26,19 @@ class MoutainCarMDP(MDP):
         - reward: return the custom reward function
         - transition: take an action in the environment
     """
-    def __init__(self, 
-            discount: float = 0.99, 
-            time_limit: Optional[int] = None, 
-            num_bins: Optional[int] = 20,
-            low: Optional[List[float]] = None,
-            high: Optional[List[float]] = None,
-            render_mode: str = None,
-            seed: int = 0
-        ):
+
+    def __init__(
+        self,
+        discount: float = 0.99,
+        time_limit: Optional[int] = None,
+        num_bins: Optional[int] = 20,
+        low: Optional[List[float]] = None,
+        high: Optional[List[float]] = None,
+        render_mode: str = None,
+        seed: int = 0,
+    ):
         super().__init__()
-        self.env = gym.make('MountainCar-v0', render_mode=render_mode)
+        self.env = gym.make("MountainCar-v0", render_mode=render_mode)
         self.state_space = self.env.observation_space.shape[0]
         self.action_space = self.env.action_space.n
         self._discount = discount
@@ -48,23 +51,29 @@ class MoutainCarMDP(MDP):
 
     # The maximum number of steps before the MDP should be reset
     @property
-    def time_limit(self,)-> int:
+    def time_limit(
+        self,
+    ) -> int:
         return self._time_limit
-    
+
     # The set of actions possible in every state
     @property
-    def actions(self,)-> list[Any]:
+    def actions(
+        self,
+    ) -> list[Any]:
         return self._actions
-    
+
     # The discount factor of the MDP
     @property
-    def discount(self,)-> float:
+    def discount(
+        self,
+    ) -> float:
         return self._discount
-    
+
     def state_adapter(self, state: StateT) -> StateT:
         return discretize(state, self.bins)
 
-    def startState(self)-> StateT:
+    def startState(self) -> StateT:
         """
         Reset the environment and return the initial state
 
@@ -73,7 +82,7 @@ class MoutainCarMDP(MDP):
         """
         observation, info = self.env.reset(seed=int(self._reset_seed_gen.integers(0, 1e6)))
         return self.state_adapter(observation)
-    
+
     # Returns custom reward function
     def reward(self, nextState, originalReward):
         if "MountainCar-v0" in self.env.unwrapped.spec.id:
@@ -83,7 +92,7 @@ class MoutainCarMDP(MDP):
             return position_reward + velocity_reward
         else:
             return originalReward
-    
+
     def transition(self, action: ActionT) -> tuple[np.ndarray, float, bool]:
         """
         Take an action in the environment
@@ -100,4 +109,3 @@ class MoutainCarMDP(MDP):
         reward = self.reward(next_state, reward)
         next_state = self.state_adapter(next_state)
         return next_state, reward, terminated
-    
