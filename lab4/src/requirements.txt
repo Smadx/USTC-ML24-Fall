@@ -1,0 +1,8 @@
+numpy==2.0.2
+huggingface-hub==0.27.0
+safetensors==0.4.5
+tqdm==4.67.1
+gymnasium[classic_control]
+PyYAML==6.0.2
+matplotlib==3.9.4
+torch==2.5.1
