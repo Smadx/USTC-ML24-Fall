@@ -10,7 +10,7 @@
 
 ## Deadline
 
-待定,不早于期末考试
+待定，不早于期末考试
 
 ## 实验环境
 
@@ -21,8 +21,6 @@
 conda activate ml24
 pip install -r requirements.txt
 ```
-
-
 
 ## 提交要求
 
@@ -37,15 +35,13 @@ pip install -r requirements.txt
     - config.json
     - config.yaml
     - mcvi.safetensors
-  - ``[Optional] reinforce``
-    - ``final``
+  - `[Optional] reinforce`
+    - `final`
       - config.json
       - model.safetensors
     - config.yaml
 - submission.py
 - report.pdf
-
-
 
 ## 成绩评定
 
@@ -53,9 +49,9 @@ pip install -r requirements.txt
 
 - Performance(30%):
 
-   每个agent会进行1000轮游戏,在规定时间内到达山顶即为获胜
+  每个 agent 会进行 1000 轮游戏，在规定时间内到达山顶即为获胜
 
-   $$grade=15*(win\_rate_{mcvi}+win\_rate_{tabular})$$
+  $$grade=15*(win\_rate_{mcvi}+win\_rate_{tabular})$$
 
 - Report(30%):
 
