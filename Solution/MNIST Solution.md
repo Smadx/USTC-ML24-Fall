@@ -8,7 +8,7 @@
 
 [toc]
 
-## 1. GMM聚类
+## 1. GMM 聚类
 
 ### 1.1 E-step
 
@@ -39,8 +39,6 @@ def _e_step(self, X: np.ndarray)-> np.ndarray:
     return gamma
 ```
 
-
-
 ### 1.2 M-step
 
 ```python
@@ -68,9 +66,7 @@ def _m_step(self, X: np.ndarray, gamma: np.ndarray):
         self.covs[k] = (X_centered.T @ (gamma_diag * X_centered)) / n_soft[k] + 1e-6 * np.eye(D)
 ```
 
-
-
-## 2. PCA降维
+## 2. PCA 降维
 
 ### 2.1 计算主成分
 
@@ -92,21 +88,17 @@ def fit(self, X: np.ndarray):
     self.components = eigenvectors[0:self.dim]
 ```
 
-
-
 ## 4. 比较不同的降维方法
 
-||True|Cluster|
-|:-:|:-:|:-:|
-|PCA|<img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\true_pca.png" style="zoom: 200%;" />|<img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\cluster_pca.png" style="zoom:200%;" />|
-|tSNE|<img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\true_tsne.png" style="zoom:200%;" />|<img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\cluster_tsne.png" style="zoom:200%;" />|
-|AutoEncoder|<img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\true_ae.png" style="zoom:200%;" />|<img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\cluster_ae.png" style="zoom:200%;" />|
+|             |                                           True                                           |                                           Cluster                                           |
+| :---------: | :--------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------: |
+|     PCA     | <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\true_pca.png" style="zoom: 200%;" /> | <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\cluster_pca.png" style="zoom:200%;" />  |
+|    tSNE     | <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\true_tsne.png" style="zoom:200%;" /> | <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\cluster_tsne.png" style="zoom:200%;" /> |
+| AutoEncoder |  <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\true_ae.png" style="zoom:200%;" />  |  <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\cluster_ae.png" style="zoom:200%;" />  |
 
+## 5. 作为生成模型的 GMM
 
-
-## 5. 作为生成模型的GMM
-
-### 5.1 从GMM中采样
+### 5.1 从 GMM 中采样
 
 ```python
 def sample_from_gmm(gmm: GMM, pca: PCA, label: int, path: Union[str , Path]):
@@ -135,48 +127,35 @@ def sample_from_gmm(gmm: GMM, pca: PCA, label: int, path: Union[str , Path]):
     sample.save(path / 'gmm_sample.png')
 ```
 
-*此处直接裁剪到$[0,255]$效果更好
-
-
+\*此处直接裁剪到$[0,255]$效果更好
 
 ## 6. 测试
 
-|                             GMM                              |                             DDPM                             |
-| :----------------------------------------------------------: | :----------------------------------------------------------: |
+|                                            GMM                                            |                                            DDPM                                            |
+| :---------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: |
 | <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\gmm_sample.png" style="zoom:200%;" /> | <img src="D:\LMZ\小数据专业课\USTC-ML24-Fall\assert\ddpm_sample.png" style="zoom:200%;" /> |
-
-
-
-
 
 ## 7. 回答问题
 
 ### 7.1 比较降维方法
 
-|                      |      PCA      | tSNE | AutoEncoder |
-| :------------------: | :-----------: | :--: | :---------: |
-|       训练速度       | 快($O(nd^2)$) |  慢  |     慢      |
-|       降维效率       |      高       |  低  |     低      |
-|        灵活性        |      低       |  中  |     高      |
-| 对数据分布的保持程度 |      低       |  中  |     高      |
-|      可视化效果      |      差       |  好  |     好      |
+|                      |      PCA       | tSNE | AutoEncoder |
+| :------------------: | :------------: | :--: | :---------: |
+|       训练速度       | 快 ($O(nd^2)$) |  慢  |     慢      |
+|       降维效率       |       高       |  低  |     低      |
+|        灵活性        |       低       |  中  |     高      |
+| 对数据分布的保持程度 |       低       |  中  |     高      |
+|      可视化效果      |       差       |  好  |     好      |
 
-*基于QR分解的PCA有$O(nd^2)$的时间复杂度. 在本次实验中你已经发现PCA比tSNE快许多,但是当维度很大时PCA并不是一个很好的降维方法, 感兴趣的同学可以在下学习选修《大数据算法》这门课进一步学习降维(Johnson-Lindenstrauss引理). 
-
-
+\*基于 QR 分解的 PCA 有$O(nd^2)$的时间复杂度。在本次实验中你已经发现 PCA 比 tSNE 快许多，但是当维度很大时 PCA 并不是一个很好的降维方法，感兴趣的同学可以在下学习选修《大数据算法》这门课进一步学习降维 (Johnson-Lindenstrauss 引理).
 
 ### 7.2 比较生成模型
 
-|          |      GMM      | DDPM |
-| :------: | :-----------: | :--: |
-| 生成效率 |      高       |  低  |
-| 生成质量 |      低       |  高  |
-|  灵活性  |      低       |  高  |
-| 是否可控 | 是,但不如DDPM |  是  |
+|          |       GMM       | DDPM |
+| :------: | :-------------: | :--: |
+| 生成效率 |       高        |  低  |
+| 生成质量 |       低        |  高  |
+|  灵活性  |       低        |  高  |
+| 是否可控 | 是，但不如 DDPM |  是  |
 
-*本次实验中我们在DDPM的输入张量上拼接了一块表示condition的张量, 这并不是标准的做法. 感兴趣的同学可以自行搜索Classifier Guidance和Clssifier-free Guidance. 
-
-
-
-
-
+\*本次实验中我们在 DDPM 的输入张量上拼接了一块表示 condition 的张量，这并不是标准的做法。感兴趣的同学可以自行搜索 Classifier Guidance 和 Clssifier-free Guidance.
