@@ -6,4 +6,4 @@ gymnasium[classic_control]
 PyYAML==6.0.2
 matplotlib==3.9.4
 torch==2.5.1
-wandb==0.15.4
+wandb==0.18.7
