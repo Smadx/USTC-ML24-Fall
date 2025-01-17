@@ -89,7 +89,7 @@ def evaluate_value_agent(
         total_rewards_ep = 0
 
         for step in range(max_steps):
-            action = agent.getAction(state)
+            action = agent.getAction(state, explore=False)
             state, reward, terminated = mdp.transition(action)
             total_rewards_ep += reward
 
@@ -121,8 +121,8 @@ def main():
     if flag:
         agent_reinforce = Policy.from_pretrained(Path(args.results_path) / "reinforce/final")
 
-    mean_reward_mcvi, std_reward_mcvi, win_rate_mcvi = evaluate_value_agent(agent_mcvi, 500, 1000)
-    mean_reward_tabular, std_reward_tabular, win_rate_tabular = evaluate_value_agent(agent_tabular, 300, 1000)
+    mean_reward_mcvi, std_reward_mcvi, win_rate_mcvi = evaluate_value_agent(agent_mcvi, 200, 1000)
+    mean_reward_tabular, std_reward_tabular, win_rate_tabular = evaluate_value_agent(agent_tabular, 200, 1000)
     if flag:
         mean_reward_reinforce, std_reward_reinforce = evaluate_policy_agent(agent_reinforce, 1000)
 

@@ -58,8 +58,8 @@ pip install -r requirements.txt
   - 记录实验流程 (2%)
   - 记录你调试超参数的过程 (5%)
   - 报告最好的游戏结果 (输出的图片) (2%)
-  - 回答问题 (20%):见 GPU Performance.pdf
-  - 反馈 (1%):见 GPU Performance.pdf
+  - 回答问题 (20%):见 Agent Playground.pdf
+  - 反馈 (1%):见 Agent Playground.pdf
 
 - Warning:
   - 请独立完成实验，不得抄袭
