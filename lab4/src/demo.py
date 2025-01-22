@@ -17,8 +17,13 @@ from tqdm import tqdm
 
 from utils import StateT, ActionT, RLAlgorithm, Metrics
 
+
 # 1
-def valueIteration(succAndRewardProb: Dict[Tuple[StateT, ActionT], List[Tuple[StateT, float, float]]], discount: float, epsilon: float = 0.001):
+def valueIteration(
+    succAndRewardProb: Dict[Tuple[StateT, ActionT], List[Tuple[StateT, float, float]]],
+    discount: float,
+    epsilon: float = 0.001,
+):
     """
     Given transition probabilities and rewards, computes and returns V and
     the optimal policy pi for each state.
@@ -42,13 +47,18 @@ def valueIteration(succAndRewardProb: Dict[Tuple[StateT, ActionT], List[Tuple[St
 
         # 1-a
         # BEGIN_YOUR_CODE
-        return sum([prob * (reward + discount * V[nextState]) for nextState, prob, reward in succAndRewardProb[(state, action)]])
+        return sum(
+            [
+                prob * (reward + discount * V[nextState])
+                for nextState, prob, reward in succAndRewardProb[(state, action)]
+            ]
+        )
         # END_YOUR_CODE
 
     def computePolicy(V: Dict[StateT, float]) -> Dict[StateT, ActionT]:
         # Return the policy given V.
         # Remember the policy for a state is the action that gives the greatest Q-value.
-        # IMPORTANT: if multiple actions give the same Q-value, choose the largest action number for the policy. 
+        # IMPORTANT: if multiple actions give the same Q-value, choose the largest action number for the policy.
         # HINT: We only compute policies for states in stateActions.
 
         # 1-b
@@ -59,11 +69,11 @@ def valueIteration(succAndRewardProb: Dict[Tuple[StateT, ActionT], List[Tuple[St
         return pi
         # END_YOUR_CODE
 
-    print('Running valueIteration...')
-    V = defaultdict(float) # This will return 0 for states not seen (handles terminal states)
+    print("Running valueIteration...")
+    V = defaultdict(float)  # This will return 0 for states not seen (handles terminal states)
     numIters = 0
     while True:
-        newV = defaultdict(float) # This will return 0 for states not seen (handles terminal states)
+        newV = defaultdict(float)  # This will return 0 for states not seen (handles terminal states)
         # update V values using the computeQ function above.
         # repeat until the V values for all states do not change by more than epsilon.
 
@@ -84,8 +94,13 @@ def valueIteration(succAndRewardProb: Dict[Tuple[StateT, ActionT], List[Tuple[St
 
 # 2
 class ModelBasedMonteCarlo(RLAlgorithm):
-    def __init__(self, actions: List[ActionT], discount: float, calcValIterEvery: int = 10000,
-                 explorationProb: float = 0.2,) -> None:
+    def __init__(
+        self,
+        actions: List[ActionT],
+        discount: float,
+        calcValIterEvery: int = 10000,
+        explorationProb: float = 0.2,
+    ) -> None:
         self.actions = actions
         self.discount = discount
         self.calcValIterEvery = calcValIterEvery
@@ -97,12 +112,12 @@ class ModelBasedMonteCarlo(RLAlgorithm):
         # (state, action) -> {nextState -> totalReward} for all nextState
         self.rTotal = defaultdict(lambda: defaultdict(float))
 
-        self.pi = {} # Optimal policy for each state. state -> action
+        self.pi = {}  # Optimal policy for each state. state -> action
 
     def getAction(self, state: StateT, explore: bool = True) -> ActionT:
         """
         This algorithm will produce an action given a state.
-        
+
         Here we use the epsilon-greedy algorithm: with probability |explorationProb|, take a random action.
         Should return random action if the given state is not in self.pi.
         The input boolean |explore| indicates whether the RL algorithm is in train or test time. If it is false (test), we
@@ -112,9 +127,9 @@ class ModelBasedMonteCarlo(RLAlgorithm):
         if explore:
             self.numIters += 1
         explorationProb = self.explorationProb
-        if self.numIters < 2e4: # Always explore
+        if self.numIters < 2e4:  # Always explore
             explorationProb = 1.0
-        elif self.numIters > 1e6: # Lower the exploration probability by a logarithmic factor.
+        elif self.numIters > 1e6:  # Lower the exploration probability by a logarithmic factor.
             explorationProb = explorationProb / math.log(self.numIters - 100000 + 1)
 
         # 2-a
@@ -147,7 +162,7 @@ class ModelBasedMonteCarlo(RLAlgorithm):
             # Hint 1: prob(s, a, s') = (counts of transition (s,a) -> s') / (total transtions from (s,a))
             # Hint 2: Reward(s, a, s') = (total reward of (s,a) -> s') / (counts of transition (s,a) -> s')
             # Then run valueIteration and update self.pi.
-            succAndRewardProb = defaultdict(list) # (state, action) -> [(nextState, transitionProb, expectedreward)]
+            succAndRewardProb = defaultdict(list)  # (state, action) -> [(nextState, transitionProb, expectedreward)]
 
             # 2-b
             # BEGIN_YOUR_CODE
@@ -183,7 +198,7 @@ class ModelBasedMonteCarlo(RLAlgorithm):
         mcvi = cls(**config)
         mcvi.pi = {eval(k): int(v.item()) for k, v in pi.items()}
         return mcvi
-        
+
 
 # 3
 class TabularQLearning(RLAlgorithm):
@@ -199,7 +214,7 @@ class TabularQLearning(RLAlgorithm):
         self.discount = discount
         self.explorationProb = explorationProb
         self.initialQ = initialQ
-        self.Q = defaultdict(lambda: initialQ) # Dict[Tuple[Tuple[float, float], int], float]
+        self.Q = defaultdict(lambda: initialQ)  # Dict[Tuple[Tuple[float, float], int], float]
         self.numIters = 0
 
     def getAction(self, state: StateT, explore: bool = True) -> ActionT:
@@ -212,9 +227,9 @@ class TabularQLearning(RLAlgorithm):
         if explore:
             self.numIters += 1
         explorationProb = self.explorationProb
-        if self.numIters < 2e4: # explore
+        if self.numIters < 2e4:  # explore
             explorationProb = 1.0
-        elif self.numIters > 1e5: # Lower the exploration probability by a logarithmic factor.
+        elif self.numIters > 1e5:  # Lower the exploration probability by a logarithmic factor.
             explorationProb = explorationProb / math.log(self.numIters - 100000 + 1)
         # HINT 1: You can access Q-value with self.Q[state, action]
         # HINT 2: Use random.random() to sample from the uniform distribution [0, 1]
@@ -232,16 +247,18 @@ class TabularQLearning(RLAlgorithm):
     def getStepSize(self) -> float:
         return 0.1
 
-    def incorporateFeedback(self, state: StateT, action: ActionT, reward: float, nextState: StateT, terminal: bool) -> None:
+    def incorporateFeedback(
+        self, state: StateT, action: ActionT, reward: float, nextState: StateT, terminal: bool
+    ) -> None:
         """
         We will call this function with (s, a, r, s'), which you should use to update |Q|.
         Note that if s' is a terminal state, then terminal will be True.  Remember to check for this.
-        You should update the Q values using self.getStepSize() 
+        You should update the Q values using self.getStepSize()
         HINT 1: The target V for the current state is a combination of the immediate reward
         and the discounted future value.
         HINT 2: V for terminal states is 0
         """
-        
+
         # 3-b
         # BEGIN_YOUR_CODE
         target = reward
@@ -257,7 +274,7 @@ class TabularQLearning(RLAlgorithm):
             "actions": self.actions,
             "discount": self.discount,
             "explorationProb": self.explorationProb,
-            "initialQ": self.initialQ
+            "initialQ": self.initialQ,
         }
         with open(path / "config.json", "w") as f:
             json.dump(config, f, indent=4)
@@ -292,6 +309,7 @@ class Policy(nn.Module, PyTorchModelHubMixin):
         - forward: Forward pass of the network.
         - getAction: Get the action from the policy network.
     """
+
     def __init__(self, state_dim: int = 4, action_dim: int = 2, h_size: int = 24):
         super(Policy, self).__init__()
 
@@ -306,11 +324,11 @@ class Policy(nn.Module, PyTorchModelHubMixin):
 
     def forward(self, x):
         x = F.relu(self.state_projection(x))
-        #x = self.hidden_layers(x)
+        # x = self.hidden_layers(x)
         x = self.action_head(x)
         x = F.softmax(x, dim=1)
         return x
-    
+
     def getAction(self, state: torch.Tensor):
         """
         Get the action from the policy network.
@@ -329,16 +347,16 @@ class Policy(nn.Module, PyTorchModelHubMixin):
 
 
 def reinforce(
-        policy: Policy, 
-        batch_size: int,
-        lr: float,
-        num_updates: int,
-        max_t: int, 
-        gamma: float, 
-        checkpoint_path: Union[str, Path],
-        window_size: int = 50,
-        save_every: int = 100,
-        metrics: Optional[Metrics] = None
+    policy: Policy,
+    batch_size: int,
+    lr: float,
+    num_updates: int,
+    max_t: int,
+    gamma: float,
+    checkpoint_path: Union[str, Path],
+    window_size: int = 50,
+    save_every: int = 100,
+    metrics: Optional[Metrics] = None,
 ):
     """
     Reinforce Algorithm for Policy Gradient.
@@ -371,17 +389,17 @@ def reinforce(
     policy.train()
     # policy.to(device)
 
-    R_deque = deque(maxlen=window_size) # Store the whole episode rewards.
+    R_deque = deque(maxlen=window_size)  # Store the whole episode rewards.
 
-    env = gym.make('CartPole-v1')
-    
+    env = gym.make("CartPole-v1")
+
     status = metrics.get_status() if metrics is not None else "Start training!"
     with tqdm(total=num_updates, desc=status, leave=False) as pbar:
         for upd_step in range(1, num_updates + 1):
             opt.zero_grad()
             for i_episode in range(1, batch_size + 1):
-                saved_log_probs = [] # Store the log probability for each time step in an episode.
-                rewards = [] # Store the rewards for each time step in an episode.
+                saved_log_probs = []  # Store the log probability for each time step in an episode.
+                rewards = []  # Store the rewards for each time step in an episode.
                 state, _ = env.reset()
 
                 # 4-a
@@ -400,33 +418,33 @@ def reinforce(
 
                     if terminated:
                         break
-                
+
                 # END_YOUR_CODE
 
                 traj_r = sum(rewards)
-                R_deque.append(traj_r) # Store the whole episode rewards.
+                R_deque.append(traj_r)  # Store the whole episode rewards.
 
-                returns = deque(maxlen=max_t) # G(t) = r(t) + gamma * G(t+1)
+                returns = deque(maxlen=max_t)  # G(t) = r(t) + gamma * G(t+1)
                 n_steps = len(rewards)
 
                 # 4-b
                 # Compute the discounted return for each time step.
                 # BEGIN_YOUR_CODE
                 for t in range(n_steps)[::-1]:
-                    disc_return_t = (returns[0] if len(returns) > 0 else 0)
+                    disc_return_t = returns[0] if len(returns) > 0 else 0
                     returns.appendleft(gamma * disc_return_t + rewards[t])
                 # END_YOUR_CODE
 
                 # 4-c
                 # Maybe standardization of the returns is employed to make training more stable
                 # eps = np.finfo(np.float32).eps.item()
-                # eps is the smallest representable float, which is 
+                # eps is the smallest representable float, which is
                 # added to the standard deviation of the returns to avoid numerical instabilities
                 # BEGIN_YOUR_CODE
                 eps = np.finfo(np.float32).eps.item()
                 returns = torch.tensor(returns)
                 returns = (returns - returns.mean()) / (returns.std() + eps)
-                
+
                 # Compute loss for each time step and sum them up.
                 policy_loss = []
                 for log_prob, R_t in zip(saved_log_probs, returns):
@@ -451,7 +469,7 @@ def reinforce(
             if metrics is not None:
                 metrics.commit(update_step_time=True, step=upd_step, lr=lr)
                 status = metrics.push()
-                
+
                 if metrics.step % save_every == 0:
                     policy.save_pretrained(checkpoint_path / f"checkpoint_{metrics.step}")
             else:
